@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Book Appointment</title>
+</head>
+<body>
+
+<h2>Book an Appointment</h2>
+
+<p><a href="/">Home</a> | <a href="/slots">View Slots</a></p>
+
+<form action="/appointments/book" method="post">
+    <p>
+        <label>Candidate ID</label><br/>
+        <input type="number" name="candidateId" required />
+    </p>
+
+    <p>
+        <label>Service ID</label><br/>
+        <input type="number" name="serviceId" value="1" required />
+        <small>(Example: 1 = Mock Interview, 2 = Certification Coaching)</small>
+    </p>
+
+    <p>
+        <label>Select Slot</label><br/>
+        <select name="slotId" required>
+            <option value="" disabled selected>-- choose a slot --</option>
+            <option th:each="s : ${slots}"
+                    th:value="${s.slotId}"
+                    th:text="${'Slot ' + s.slotId + ' | Coach ' + s.coachId + ' | ' + s.startTime}">
+                Slot 1
+            </option>
+        </select>
+    </p>
+
+    <button type="submit">Book</button>
+</form>
+
+</body>
+</html>
