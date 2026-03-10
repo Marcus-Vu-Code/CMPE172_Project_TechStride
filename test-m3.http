@@ -1,0 +1,10 @@
+### Home page (HTML)
+GET http://localhost:8080/
+
+### View available slots (JSON)
+GET http://localhost:8080/api/slots
+Accept: application/json
+
+### View appointments (JSON)
+GET http://localhost:8080/api/appointments
+Accept: application/json
