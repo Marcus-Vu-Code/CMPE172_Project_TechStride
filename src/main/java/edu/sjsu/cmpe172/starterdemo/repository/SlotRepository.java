@@ -20,7 +20,7 @@ public class SlotRepository {
 
     public List<AvailabilitySlot> findAvailableSlots() {
         String sql = """
-                SELECT slot_id, coach_id, start_time, end_time, status
+                SELECT slot_id, coach_id, start_time, end_time, status, version
                 FROM availability_slots
                 WHERE status = 'Available'
                 ORDER BY start_time ASC
@@ -34,14 +34,15 @@ public class SlotRepository {
                     rs.getLong("coach_id"),
                     start,
                     end,
-                    rs.getString("status")
+                    rs.getString("status"),
+                    rs.getInt("version")
             );
         });
     }
 
     public Optional<AvailabilitySlot> findById(long slotId) {
         String sql = """
-                SELECT slot_id, coach_id, start_time, end_time, status
+                SELECT slot_id, coach_id, start_time, end_time, status, version
                 FROM availability_slots
                 WHERE slot_id = ?
                 """;
@@ -54,16 +55,23 @@ public class SlotRepository {
                     rs.getLong("coach_id"),
                     start,
                     end,
-                    rs.getString("status")
+                    rs.getString("status"),
+                    rs.getInt("version")
             );
         }, slotId);
 
         return rows.stream().findFirst();
     }
 
-    public int markBooked(long slotId) {
-        String sql = "UPDATE availability_slots SET status = 'Booked' WHERE slot_id = ?";
-        return jdbcTemplate.update(sql, slotId);
+    public int reserveIfVersionMatches(long slotId, int expectedVersion) {
+        String sql = """
+                UPDATE availability_slots
+                SET status = 'Booked', version = version + 1
+                WHERE slot_id = ?
+                  AND status = 'Available'
+                  AND version = ?
+                """;
+        return jdbcTemplate.update(sql, slotId, expectedVersion);
     }
 
     private static LocalDateTime toLdt(Timestamp ts) {

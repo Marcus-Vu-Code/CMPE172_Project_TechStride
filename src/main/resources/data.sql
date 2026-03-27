@@ -14,7 +14,7 @@ INSERT INTO services(service_id, service_name, price) VALUES
     (1, 'Mock Interview', 149.00),
     (2, 'Certification Coaching', 99.00);
 
-INSERT INTO availability_slots(slot_id, coach_id, start_time, end_time, status) VALUES
-    (1001, 101, '2026-03-10 10:00:00', '2026-03-10 11:00:00', 'Available'),
-    (1002, 101, '2026-03-10 11:00:00', '2026-03-10 12:00:00', 'Available'),
-    (2001, 102, '2026-03-11 13:00:00', '2026-03-11 14:00:00', 'Available');
+INSERT INTO availability_slots(slot_id, coach_id, start_time, end_time, status, version) VALUES
+    (1001, 101, '2026-03-10 10:00:00', '2026-03-10 11:00:00', 'Available', 0),
+    (1002, 101, '2026-03-10 11:00:00', '2026-03-10 12:00:00', 'Available', 0),
+    (2001, 102, '2026-03-11 13:00:00', '2026-03-11 14:00:00', 'Available', 0);

@@ -8,13 +8,15 @@ public class AvailabilitySlot {
     private final LocalDateTime startTime;
     private final LocalDateTime endTime;
     private final String status;
+    private final int version;
 
-    public AvailabilitySlot(long slotId, long coachId, LocalDateTime startTime, LocalDateTime endTime, String status) {
+    public AvailabilitySlot(long slotId, long coachId, LocalDateTime startTime, LocalDateTime endTime, String status, int version) {
         this.slotId = slotId;
         this.coachId = coachId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
+        this.version = version;
     }
 
     public long getSlotId() { return slotId; }
@@ -22,4 +24,5 @@ public class AvailabilitySlot {
     public LocalDateTime getStartTime() { return startTime; }
     public LocalDateTime getEndTime() { return endTime; }
     public String getStatus() { return status; }
+    public int getVersion() { return version; }
 }

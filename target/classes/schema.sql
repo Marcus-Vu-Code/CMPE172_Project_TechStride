@@ -34,6 +34,7 @@ CREATE TABLE availability_slots (
     start_time  TIMESTAMP NOT NULL,
     end_time    TIMESTAMP NOT NULL,
     status      TEXT NOT NULL,
+    version     INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (coach_id) REFERENCES coaches(coach_id)
 );
 
