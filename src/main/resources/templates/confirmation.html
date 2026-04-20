@@ -16,6 +16,21 @@
     <p><b>Not booked.</b> That slot is no longer available.</p>
 </div>
 
+<div th:if="${message != null}">
+    <p th:text="${message}">Booking status message.</p>
+</div>
+
+<div th:if="${success == true and notificationSent == true}">
+    <p><b>Remote confirmation:</b> queued successfully.</p>
+    <p>Status: <span th:text="${notificationStatus}">QUEUED</span></p>
+    <p>Tracking ID: <span th:text="${notificationTrackingId}">NOTIFY-123</span></p>
+</div>
+
+<div th:if="${success == true and notificationSent == false}">
+    <p><b>Remote confirmation:</b> not sent.</p>
+    <p>Status: <span th:text="${notificationStatus}">FAILED</span></p>
+</div>
+
 <p>
     <a href="/">Home</a> |
     <a href="/slots">View Slots</a> |

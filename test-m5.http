@@ -1,0 +1,22 @@
+### M5 main boundary call
+POST http://localhost:8080/api/appointments/book-and-notify
+Content-Type: application/json
+
+{
+  "candidateId": 1,
+  "slotId": 1001,
+  "serviceId": 1
+}
+
+### Mock remote service directly
+POST http://localhost:8080/mock-api/notifications/booking-confirmation
+Content-Type: application/json
+
+{
+  "eventType": "BOOKING_CONFIRMED",
+  "candidateId": 1,
+  "slotId": 1001,
+  "serviceId": 1,
+  "deliveryChannel": "EMAIL",
+  "message": "Your TechStride appointment has been booked successfully."
+}

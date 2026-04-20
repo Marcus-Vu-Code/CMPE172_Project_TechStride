@@ -1,9 +1,13 @@
 package edu.sjsu.cmpe172.starterdemo.controller;
 
+import edu.sjsu.cmpe172.starterdemo.dto.BookingResponse;
 import edu.sjsu.cmpe172.starterdemo.service.AppointmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -18,7 +22,6 @@ public class AppointmentPageController {
 
     @GetMapping("/book")
     public String showBookingForm(Model model) {
-        // Provide available slots for a dropdown list
         model.addAttribute("slots", appointmentService.listAvailableSlots());
         return "book";
     }
@@ -28,9 +31,13 @@ public class AppointmentPageController {
                                 @RequestParam long slotId,
                                 @RequestParam long serviceId,
                                 RedirectAttributes redirectAttributes) {
-        boolean ok = appointmentService.book(candidateId, slotId, serviceId);
-        redirectAttributes.addFlashAttribute("success", ok);
+        BookingResponse response = appointmentService.bookAndNotify(candidateId, slotId, serviceId);
+        redirectAttributes.addFlashAttribute("success", response.isBooked());
         redirectAttributes.addFlashAttribute("slotId", slotId);
+        redirectAttributes.addFlashAttribute("notificationSent", response.isNotificationSent());
+        redirectAttributes.addFlashAttribute("notificationStatus", response.getNotificationStatus());
+        redirectAttributes.addFlashAttribute("notificationTrackingId", response.getNotificationTrackingId());
+        redirectAttributes.addFlashAttribute("message", response.getMessage());
         return "redirect:/confirmation";
     }
 }
