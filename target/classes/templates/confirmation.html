@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Confirmation</title>
+</head>
+<body>
+
+<h2>Booking Confirmation</h2>
+
+<div th:if="${success == true}">
+    <p><b>Success!</b> Your appointment was booked.</p>
+</div>
+
+<div th:if="${success == false}">
+    <p><b>Not booked.</b> That slot is no longer available.</p>
+</div>
+
+<div th:if="${message != null}">
+    <p th:text="${message}">Booking status message.</p>
+</div>
+
+<div th:if="${success == true and notificationSent == true}">
+    <p><b>Remote confirmation:</b> queued successfully.</p>
+    <p>Status: <span th:text="${notificationStatus}">QUEUED</span></p>
+    <p>Tracking ID: <span th:text="${notificationTrackingId}">NOTIFY-123</span></p>
+</div>
+
+<div th:if="${success == true and notificationSent == false}">
+    <p><b>Remote confirmation:</b> not sent.</p>
+    <p>Status: <span th:text="${notificationStatus}">FAILED</span></p>
+</div>
+
+<p>
+    <a href="/">Home</a> |
+    <a href="/slots">View Slots</a> |
+    <a href="/api/appointments">View Appointments (JSON)</a>
+</p>
+
+</body>
+</html>

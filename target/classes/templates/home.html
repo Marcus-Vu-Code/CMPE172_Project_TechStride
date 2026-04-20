@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>TechStride Scheduler (M5)</title>
+</head>
+<body>
+
+<h1>TechStride Interview &amp; Certification Scheduler</h1>
+
+<p>
+    This is the CMPE 172 Term Project milestone M5 build with a mock remote notification boundary.
+</p>
+
+<h3>Pages</h3>
+<ul>
+    <li><a href="/slots">View Available Slots</a></li>
+    <li><a href="/appointments/book">Book Appointment (Form)</a></li>
+</ul>
+
+<h3>API (JSON)</h3>
+<ul>
+    <li><a href="/api/slots">GET /api/slots</a></li>
+    <li><a href="/api/appointments">GET /api/appointments</a></li>
+</ul>
+
+<p>
+    Main M5 endpoint: <code>POST /api/appointments/book-and-notify</code><br/>
+    Mock remote service: <code>POST /mock-api/notifications/booking-confirmation</code>
+</p>
+
+</body>
+</html>

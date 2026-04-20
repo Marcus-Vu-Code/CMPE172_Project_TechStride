@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Available Slots</title>
+</head>
+<body>
+
+<h2>Available Coaching Slots</h2>
+
+<p><a href="/">Home</a> | <a href="/appointments/book">Book Appointment</a></p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+    <tr>
+        <th>Slot ID</th>
+        <th>Coach ID</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="s : ${slots}">
+        <td th:text="${s.slotId}">1</td>
+        <td th:text="${s.coachId}">101</td>
+        <td th:text="${s.startTime}">2026-03-10T10:00</td>
+        <td th:text="${s.endTime}">2026-03-10T11:00</td>
+        <td th:text="${s.status}">Available</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
