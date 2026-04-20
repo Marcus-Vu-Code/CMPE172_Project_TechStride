@@ -5,9 +5,8 @@ import edu.sjsu.cmpe172.starterdemo.model.AvailabilitySlot;
 import edu.sjsu.cmpe172.starterdemo.repository.AppointmentRepository;
 import edu.sjsu.cmpe172.starterdemo.repository.SlotRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,15 +17,11 @@ public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final SlotRepository slotRepository;
-    private final TransactionTemplate transactionTemplate;
 
     public AppointmentService(AppointmentRepository appointmentRepository,
-                              SlotRepository slotRepository,
-                              PlatformTransactionManager transactionManager) {
+                              SlotRepository slotRepository) {
         this.appointmentRepository = appointmentRepository;
         this.slotRepository = slotRepository;
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
 
     public List<AvailabilitySlot> listAvailableSlots() {
@@ -40,33 +35,39 @@ public class AppointmentService {
     public boolean book(long candidateId, long slotId, long serviceId) {
         int retries = MAX_RETRIES;
         while (retries > 0) {
-            Boolean booked = transactionTemplate.execute(status -> bookSingleAttempt(candidateId, slotId, serviceId));
-            if (Boolean.TRUE.equals(booked)) {
+            try {
+                bookSingleAttempt(candidateId, slotId, serviceId);
                 return true;
-            }
-
-            retries--;
-            if (retries == 0) {
-                return false;
+            } catch (ConflictException e) {
+                retries--;
+                if (retries == 0) {
+                    return false;
+                }
             }
         }
 
         return false;
     }
 
-    private boolean bookSingleAttempt(long candidateId, long slotId, long serviceId) {
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    private void bookSingleAttempt(long candidateId, long slotId, long serviceId) {
         Optional<AvailabilitySlot> slot = slotRepository.findById(slotId);
         if (slot.isEmpty() || !"Available".equalsIgnoreCase(slot.get().getStatus())) {
-            return false;
+            throw new ConflictException("Slot is not available for booking");
         }
 
         int updated = slotRepository.reserveIfVersionMatches(slotId, slot.get().getVersion());
         if (updated == 0) {
-            return false;
+            throw new ConflictException("Conflict detected. Slot version mismatch - retry booking.");
         }
 
         // Insert only after slot reservation wins, so rollback keeps data consistent.
         appointmentRepository.insert(candidateId, slotId, serviceId);
-        return true;
+    }
+
+    private static class ConflictException extends RuntimeException {
+        public ConflictException(String message) {
+            super(message);
+        }
     }
 }
