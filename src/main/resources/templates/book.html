@@ -2,40 +2,35 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Appointment</title>
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+<div class="shell">
+    <nav class="nav">
+        <div class="logo"><span class="logo-mark">TS</span><span>Book Appointment</span></div>
+        <div class="nav-links"><a href="/">Home</a><a href="/slots">Slots</a><a href="/api/appointments">Appointments API</a></div>
+    </nav>
 
-<h2>Book an Appointment</h2>
-
-<p><a href="/">Home</a> | <a href="/slots">View Slots</a></p>
-
-<form action="/appointments/book" method="post">
-    <p>
-        <label>Candidate ID</label><br/>
-        <input type="number" name="candidateId" required />
-    </p>
-
-    <p>
-        <label>Service ID</label><br/>
-        <input type="number" name="serviceId" value="1" required />
-        <small>(Example: 1 = Mock Interview, 2 = Certification Coaching)</small>
-    </p>
-
-    <p>
-        <label>Select Slot</label><br/>
-        <select name="slotId" required>
-            <option value="" disabled selected>-- choose a slot --</option>
-            <option th:each="s : ${slots}"
-                    th:value="${s.slotId}"
-                    th:text="${'Slot ' + s.slotId + ' | Coach ' + s.coachId + ' | ' + s.startTime}">
-                Slot 1
-            </option>
-        </select>
-    </p>
-
-    <button type="submit">Book</button>
-</form>
-
+    <div class="card">
+        <h1>Reserve a coaching session</h1>
+        <p class="lede">Use candidate ID 1 or 2 for the demo. Service 1 is Mock Interview; Service 2 is Certification Coaching.</p>
+        <form action="/appointments/book" method="post">
+            <div class="form-grid">
+                <p><label>Candidate ID</label><input type="number" name="candidateId" value="1" min="1" required /></p>
+                <p><label>Service ID</label><input type="number" name="serviceId" value="1" min="1" required /><span class="help">1 = Mock Interview, 2 = Certification Coaching</span></p>
+            </div>
+            <p>
+                <label>Select Slot</label>
+                <select name="slotId" required>
+                    <option value="" disabled th:selected="${selectedSlotId == null}">Choose an available slot</option>
+                    <option th:each="s : ${slots}" th:value="${s.slotId}" th:selected="${selectedSlotId != null and selectedSlotId == s.slotId}" th:text="${'Slot ' + s.slotId + ' | Coach ' + s.coachId + ' | ' + s.startTime}">Slot</option>
+                </select>
+            </p>
+            <div class="actions"><button type="submit">Book and notify</button><a class="btn secondary" href="/slots">Back to slots</a></div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

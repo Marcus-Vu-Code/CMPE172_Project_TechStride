@@ -2,34 +2,41 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Available Slots</title>
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+<div class="shell">
+    <nav class="nav">
+        <div class="logo"><span class="logo-mark">TS</span><span>Available Slots</span></div>
+        <div class="nav-links"><a href="/">Home</a><a href="/appointments/book">Book</a><a href="/api/slots">JSON</a></div>
+    </nav>
 
-<h2>Available Coaching Slots</h2>
-
-<p><a href="/">Home</a> | <a href="/appointments/book">Book Appointment</a></p>
-
-<table border="1" cellpadding="6" cellspacing="0">
-    <thead>
-    <tr>
-        <th>Slot ID</th>
-        <th>Coach ID</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="s : ${slots}">
-        <td th:text="${s.slotId}">1</td>
-        <td th:text="${s.coachId}">101</td>
-        <td th:text="${s.startTime}">2026-03-10T10:00</td>
-        <td th:text="${s.endTime}">2026-03-10T11:00</td>
-        <td th:text="${s.status}">Available</td>
-    </tr>
-    </tbody>
-</table>
-
+    <div class="card">
+        <h1>Available coaching slots</h1>
+        <p class="lede">Only slots with status Available are shown. After a successful booking, the slot disappears from this list.</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr><th>Slot ID</th><th>Coach ID</th><th>Start</th><th>End</th><th>Status</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="s : ${slots}">
+                    <td th:text="${s.slotId}">1001</td>
+                    <td th:text="${s.coachId}">101</td>
+                    <td th:text="${s.startTime}">2026-03-10T10:00</td>
+                    <td th:text="${s.endTime}">2026-03-10T11:00</td>
+                    <td><span class="status" th:text="${s.status}">Available</span></td>
+                    <td><a class="btn secondary" th:href="@{/appointments/book(slotId=${s.slotId})}">Book</a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(slots)}">
+                    <td colspan="6">No available slots remain. Restart the app to reload demo seed data.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 </html>

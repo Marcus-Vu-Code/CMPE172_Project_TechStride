@@ -2,40 +2,30 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Confirmation</title>
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+<div class="shell">
+    <nav class="nav">
+        <div class="logo"><span class="logo-mark">TS</span><span>Booking Result</span></div>
+        <div class="nav-links"><a href="/">Home</a><a href="/slots">Slots</a><a href="/appointments/book">Book again</a><a href="/metrics">Metrics</a></div>
+    </nav>
 
-<h2>Booking Confirmation</h2>
+    <div class="card">
+        <h1>Booking confirmation</h1>
+        <div th:if="${success == true}" class="alert success"><strong>Success.</strong> Your appointment was booked and the local transaction committed.</div>
+        <div th:if="${success == false}" class="alert error"><strong>Not booked.</strong> That slot is no longer available.</div>
+        <p class="lede" th:if="${message != null}" th:text="${message}">Booking status message.</p>
 
-<div th:if="${success == true}">
-    <p><b>Success!</b> Your appointment was booked.</p>
+        <div class="grid" th:if="${success == true}">
+            <div class="stat"><strong th:text="${slotId}">1001</strong><span>slot booked</span></div>
+            <div class="stat"><strong th:text="${notificationStatus}">QUEUED</strong><span>notification status</span></div>
+            <div class="stat"><strong th:text="${notificationTrackingId != null ? notificationTrackingId : 'N/A'}">NOTIFY</strong><span>tracking id</span></div>
+        </div>
+        <div class="actions"><a class="btn" href="/slots">View remaining slots</a><a class="btn secondary" href="/api/appointments">View appointments JSON</a></div>
+    </div>
 </div>
-
-<div th:if="${success == false}">
-    <p><b>Not booked.</b> That slot is no longer available.</p>
-</div>
-
-<div th:if="${message != null}">
-    <p th:text="${message}">Booking status message.</p>
-</div>
-
-<div th:if="${success == true and notificationSent == true}">
-    <p><b>Remote confirmation:</b> queued successfully.</p>
-    <p>Status: <span th:text="${notificationStatus}">QUEUED</span></p>
-    <p>Tracking ID: <span th:text="${notificationTrackingId}">NOTIFY-123</span></p>
-</div>
-
-<div th:if="${success == true and notificationSent == false}">
-    <p><b>Remote confirmation:</b> not sent.</p>
-    <p>Status: <span th:text="${notificationStatus}">FAILED</span></p>
-</div>
-
-<p>
-    <a href="/">Home</a> |
-    <a href="/slots">View Slots</a> |
-    <a href="/api/appointments">View Appointments (JSON)</a>
-</p>
-
 </body>
 </html>

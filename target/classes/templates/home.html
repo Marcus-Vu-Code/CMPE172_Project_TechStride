@@ -2,32 +2,66 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>TechStride Scheduler (M5)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechStride Scheduler</title>
+    <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+<div class="shell">
+    <nav class="nav">
+        <div class="logo"><span class="logo-mark">TS</span><span>TechStride Scheduler</span></div>
+        <div class="nav-links">
+            <a href="/slots">Slots</a>
+            <a href="/appointments/book">Book</a>
+            <a href="/api/appointments">Appointments API</a>
+            <a href="/health">Health</a>
+            <a href="/metrics">Metrics</a>
+        </div>
+    </nav>
 
-<h1>TechStride Interview &amp; Certification Scheduler</h1>
+    <section class="hero">
+        <div class="card">
+            <h1>Interview coaching appointments without double-booking.</h1>
+            <p class="lede">TechStride is a Spring Boot + JDBC appointment scheduler for mock interviews and certification coaching. It demonstrates enterprise layering, SQL persistence, optimistic concurrency control, logging, health checks, metrics, and a mock notification service boundary.</p>
+            <div class="actions">
+                <a class="btn" href="/appointments/book">Book a session</a>
+                <a class="btn secondary" href="/slots">Browse slots</a>
+            </div>
+            <div class="badges">
+                <span class="badge">Java + Spring Boot</span>
+                <span class="badge">JDBC / SQLite</span>
+                <span class="badge">Optimistic locking</span>
+                <span class="badge">Mock notification API</span>
+            </div>
+        </div>
+        <div class="card stats">
+            <div class="stat"><strong>3</strong><span>seeded coaching slots</span></div>
+            <div class="stat"><strong>1:1</strong><span>unique appointment per slot</span></div>
+            <div class="stat"><strong>/health</strong><span>operability endpoint</span></div>
+        </div>
+    </section>
 
-<p>
-    This is the CMPE 172 Term Project milestone M5 build with a mock remote notification boundary.
-</p>
+    <section class="grid">
+        <div class="card feature">
+            <h3>Core booking</h3>
+            <p>Candidates browse available coaching slots, submit a booking, and receive a confirmation page.</p>
+        </div>
+        <div class="card feature">
+            <h3>Concurrency safe</h3>
+            <p>The booking service reserves slots with a version check and rolls back failed attempts.</p>
+        </div>
+        <div class="card feature">
+            <h3>Remote boundary</h3>
+            <p>After the local booking commits, the app calls a mock external notification endpoint.</p>
+        </div>
+    </section>
 
-<h3>Pages</h3>
-<ul>
-    <li><a href="/slots">View Available Slots</a></li>
-    <li><a href="/appointments/book">Book Appointment (Form)</a></li>
-</ul>
+    <div class="card code-list" style="margin-top:18px;">
+        <h2>Useful demo endpoints</h2>
+        <p><code>GET /api/slots</code> <code>GET /api/appointments</code> <code>POST /api/appointments/book-and-notify</code> <code>GET /health</code> <code>GET /metrics</code></p>
+    </div>
 
-<h3>API (JSON)</h3>
-<ul>
-    <li><a href="/api/slots">GET /api/slots</a></li>
-    <li><a href="/api/appointments">GET /api/appointments</a></li>
-</ul>
-
-<p>
-    Main M5 endpoint: <code>POST /api/appointments/book-and-notify</code><br/>
-    Mock remote service: <code>POST /mock-api/notifications/booking-confirmation</code>
-</p>
-
+    <p class="footer">CMPE 172 Final Project - TechStride Interview & Certification Scheduler</p>
+</div>
 </body>
 </html>

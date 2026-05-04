@@ -21,8 +21,9 @@ public class AppointmentPageController {
     }
 
     @GetMapping("/book")
-    public String showBookingForm(Model model) {
+    public String showBookingForm(@RequestParam(required = false) Long slotId, Model model) {
         model.addAttribute("slots", appointmentService.listAvailableSlots());
+        model.addAttribute("selectedSlotId", slotId);
         return "book";
     }
 

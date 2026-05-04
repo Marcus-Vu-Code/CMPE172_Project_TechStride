@@ -1,0 +1,31 @@
+### Health check
+GET http://localhost:8080/health
+
+### Metrics
+GET http://localhost:8080/metrics
+
+### List available slots
+GET http://localhost:8080/api/slots
+
+### First booking should succeed
+POST http://localhost:8080/api/appointments/book-and-notify
+Content-Type: application/json
+
+{
+  "candidateId": 1,
+  "slotId": 1001,
+  "serviceId": 1
+}
+
+### Second booking on same slot should fail with 409 Conflict
+POST http://localhost:8080/api/appointments/book-and-notify
+Content-Type: application/json
+
+{
+  "candidateId": 2,
+  "slotId": 1001,
+  "serviceId": 1
+}
+
+### View appointments after booking
+GET http://localhost:8080/api/appointments

@@ -26,15 +26,18 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final SlotRepository slotRepository;
     private final NotificationGateway notificationGateway;
+    private final SystemMetricsService metricsService;
     private final TransactionTemplate transactionTemplate;
 
     public AppointmentService(AppointmentRepository appointmentRepository,
                               SlotRepository slotRepository,
                               NotificationGateway notificationGateway,
+                              SystemMetricsService metricsService,
                               PlatformTransactionManager transactionManager) {
         this.appointmentRepository = appointmentRepository;
         this.slotRepository = slotRepository;
         this.notificationGateway = notificationGateway;
+        this.metricsService = metricsService;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
     }
@@ -85,6 +88,7 @@ public class AppointmentService {
     }
 
     private boolean attemptBookingWithRetry(long candidateId, long slotId, long serviceId) {
+        long startNanos = System.nanoTime();
         int retries = MAX_RETRIES;
         while (retries > 0) {
             try {
@@ -92,17 +96,26 @@ public class AppointmentService {
                     bookSingleAttempt(candidateId, slotId, serviceId);
                     return true;
                 });
-                return Boolean.TRUE.equals(booked);
+                if (Boolean.TRUE.equals(booked)) {
+                    metricsService.recordBookingSuccess(elapsedMillis(startNanos));
+                    return true;
+                }
             } catch (ConflictException e) {
                 retries--;
                 log.warn("Booking conflict for slot {} (candidateId={}). retriesRemaining={}", slotId, candidateId, retries);
                 if (retries == 0) {
+                    metricsService.recordBookingFailure(elapsedMillis(startNanos));
                     return false;
                 }
             }
         }
 
+        metricsService.recordBookingFailure(elapsedMillis(startNanos));
         return false;
+    }
+
+    private long elapsedMillis(long startNanos) {
+        return (System.nanoTime() - startNanos) / 1_000_000;
     }
 
     private void bookSingleAttempt(long candidateId, long slotId, long serviceId) {
